@@ -1,4 +1,4 @@
-Attribute VB_Name = "ModAreas"
+Attribute VB_Name = "Areas"
 'Argentum Online 0.11.6
 '
 'Copyright (C) 2002 Marquez Pablo Ignacio
@@ -39,19 +39,22 @@ Public MaxLimiteX As Integer
 Public MinLimiteY As Integer
 Public MaxLimiteY As Integer
 
+Public Const TamanoAreas As Byte = 11
+
 Public Sub CambioDeArea(ByVal X As Byte, ByVal Y As Byte)
     Dim loopX As Long, loopY As Long, CharIndex As Integer, ObjIndex As Integer
     
-    MinLimiteX = (X \ 11 - 1) * 11
-    MaxLimiteX = MinLimiteX + 32
-    
-    MinLimiteY = (Y \ 11 - 1) * 11
-    MaxLimiteY = MinLimiteY + 32
+    MinLimiteX = (X \ TamanoAreas - 1) * TamanoAreas
+    MaxLimiteX = MinLimiteX + ((TamanoAreas * 3) - 1)
+        
+    MinLimiteY = (Y \ TamanoAreas - 1) * TamanoAreas
+    MaxLimiteY = MinLimiteY + ((TamanoAreas * 3) - 1)
     
     For loopX = 1 To 100
         For loopY = 1 To 100
             
             If (loopY < MinLimiteY) Or (loopY > MaxLimiteY) Or (loopX < MinLimiteX) Or (loopX > MaxLimiteX) Then
+                
                 'Erase NPCs
                 CharIndex = Char_MapPosExits(loopX, loopY)
  
@@ -68,8 +71,10 @@ Public Sub CambioDeArea(ByVal X As Byte, ByVal Y As Byte)
                     Call Map_DestroyObject(loopX, loopY)
                 End If
             End If
+            
         Next loopY
     Next loopX
     
     Call RefreshAllChars
+    
 End Sub
