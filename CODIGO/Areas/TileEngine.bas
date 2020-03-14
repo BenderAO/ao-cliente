@@ -57,7 +57,7 @@ Public Const XMinMapSize As Byte = 1
 Public Const YMaxMapSize As Byte = 100
 Public Const YMinMapSize As Byte = 1
 
-Private Const GrhFogata As Integer = 1521
+Private Const GrhFogata As Long = 1521
 
 ''
 'Sets a Grh animation to loop indefinitely.
@@ -123,7 +123,7 @@ End Type
 
 'apunta a una estructura grhdata y mantiene la animacion
 Public Type Grh
-    GrhIndex As Integer
+    GrhIndex As Long
     FrameCounter As Single
     speed As Single
     Started As Byte
@@ -198,7 +198,7 @@ Public Type Char
 End Type
 
 'Info de un objeto
-Public Type Obj
+Public Type obj
     ObjIndex As Integer
     Amount As Integer
 End Type
@@ -212,7 +212,7 @@ Public Type MapBlock
     Damage As DList
     
     NPCIndex As Integer
-    OBJInfo As Obj
+    OBJInfo As obj
     TileExit As WorldPos
     Blocked As Byte
     
@@ -307,6 +307,8 @@ Public mapInfo As mapInfo ' Info acerca del mapa en uso
 Public Normal_RGBList(3) As Long
 Public Color_Shadow(3) As Long
 Public Color_Arbol(3) As Long
+Public Color_Paralisis As Long
+Public Color_Invisibilidad As Long
 
 '   Control de Lluvia
 Public bRain As Boolean
@@ -393,10 +395,7 @@ On Error Resume Next
     MapData(X, Y).CharIndex = CharIndex
 End Sub
 
-
-
-
-Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Integer, Optional ByVal Started As Byte = 2)
+Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Long, Optional ByVal Started As Byte = 2)
 '*****************************************************************
 'Sets up a grh. MUST be done before rendering
 '*****************************************************************
@@ -538,105 +537,6 @@ Sub DoPasosFx(ByVal CharIndex As Integer)
     End If
 End Sub
 
-Sub MoveCharbyPos(ByVal CharIndex As Integer, ByVal nX As Integer, ByVal nY As Integer)
-On Error Resume Next
-    Dim X As Integer
-    Dim Y As Integer
-    Dim addx As Integer
-    Dim addy As Integer
-    Dim nHeading As E_Heading
-    
-    With charlist(CharIndex)
-        X = .Pos.X
-        Y = .Pos.Y
-        
-        MapData(X, Y).CharIndex = 0
-        
-        addx = nX - X
-        addy = nY - Y
-        
-        If Sgn(addx) = 1 Then
-            nHeading = E_Heading.EAST
-        ElseIf Sgn(addx) = -1 Then
-            nHeading = E_Heading.WEST
-        ElseIf Sgn(addy) = -1 Then
-            nHeading = E_Heading.NORTH
-        ElseIf Sgn(addy) = 1 Then
-            nHeading = E_Heading.SOUTH
-        End If
-        
-        MapData(nX, nY).CharIndex = CharIndex
-        
-        .Pos.X = nX
-        .Pos.Y = nY
-        
-        .MoveOffsetX = -1 * (TilePixelWidth * addx)
-        .MoveOffsetY = -1 * (TilePixelHeight * addy)
-        
-        .Moving = 1
-        .Heading = nHeading
-        
-        .scrollDirectionX = Sgn(addx)
-        .scrollDirectionY = Sgn(addy)
-        
-        'parche para que no medite cuando camina
-        If .FxIndex = FxMeditar.CHICO Or .FxIndex = FxMeditar.GRANDE Or .FxIndex = FxMeditar.MEDIANO Or .FxIndex = FxMeditar.XGRANDE Or .FxIndex = FxMeditar.XXGRANDE Then
-            .FxIndex = 0
-        End If
-    End With
-    
-    If Not EstaPCarea(CharIndex) Then Call Dialogos.RemoveDialog(CharIndex)
-    
-    If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
-        Call Char_Erase(CharIndex)
-    End If
-End Sub
-
-Sub MoveScreen(ByVal nHeading As E_Heading)
-'******************************************
-'Starts the screen moving in a direction
-'******************************************
-    Dim X As Integer
-    Dim Y As Integer
-    Dim TX As Integer
-    Dim TY As Integer
-    
-    'Figure out which way to move
-    Select Case nHeading
-        Case E_Heading.NORTH
-            Y = -1
-        
-        Case E_Heading.EAST
-            X = 1
-        
-        Case E_Heading.SOUTH
-            Y = 1
-        
-        Case E_Heading.WEST
-            X = -1
-    End Select
-    
-    'Fill temp pos
-    TX = UserPos.X + X
-    TY = UserPos.Y + Y
-    
-    'Check to see if its out of bounds
-    If TX < MinXBorder Or TX > MaxXBorder Or TY < MinYBorder Or TY > MaxYBorder Then
-        Exit Sub
-    Else
-        'Start moving... MainLoop does the rest
-        AddtoUserPos.X = X
-        UserPos.X = TX
-        AddtoUserPos.Y = Y
-        UserPos.Y = TY
-        UserMoving = 1
-        
-        bTecho = IIf(MapData(UserPos.X, UserPos.Y).Trigger = 1 Or _
-                MapData(UserPos.X, UserPos.Y).Trigger = 2 Or _
-                MapData(UserPos.X, UserPos.Y).Trigger = 4, True, False)
-    End If
-End Sub
-
 Private Function HayFogata(ByRef Location As Position) As Boolean
     Dim J As Long
     Dim k As Long
@@ -670,92 +570,7 @@ Function NextOpenChar() As Integer
     Loop
     
     NextOpenChar = LoopC
-End Function
-
-Function LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
-'*****************************************************************
-'Checks to see if a tile position is legal
-'*****************************************************************
-    'Limites del mapa
-    If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
-        Exit Function
-    End If
-    
-    'Tile Bloqueado?
-    If MapData(X, Y).Blocked = 1 Then
-        Exit Function
-    End If
-    
-    'Hay un personaje?
-    If MapData(X, Y).CharIndex > 0 Then
-        Exit Function
-    End If
-   
-    If UserNavegando <> HayAgua(X, Y) Then
-        Exit Function
-    End If
-    
-    If UserEvento Then
-        Exit Function
-    End If
-    
-    LegalPos = True
-End Function
-
-Function MoveToLegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
-'*****************************************************************
-'Author: ZaMa
-'Last Modify Date: 01/08/2009
-'Checks to see if a tile position is legal, including if there is a casper in the tile
-'10/05/2009: ZaMa - Now you can't change position with a casper which is in the shore.
-'01/08/2009: ZaMa - Now invisible admins can't change position with caspers.
-'*****************************************************************
-    Dim CharIndex As Integer
-    
-    'Limites del mapa
-    If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
-        Exit Function
-    End If
-    
-    'Tile Bloqueado?
-    If MapData(X, Y).Blocked = 1 Then
-        Exit Function
-    End If
-    
-    CharIndex = MapData(X, Y).CharIndex
-    'Hay un personaje?
-    If CharIndex > 0 Then
-    
-        If MapData(UserPos.X, UserPos.Y).Blocked = 1 Then
-            Exit Function
-        End If
-        
-        With charlist(CharIndex)
-            ' Si no es casper, no puede pasar
-            If .iHead <> eCabezas.CASPER_HEAD And .iBody <> eCabezas.FRAGATA_FANTASMAL Then
-                Exit Function
-            Else
-                ' No puedo intercambiar con un casper que este en la orilla (Lado tierra)
-                If HayAgua(UserPos.X, UserPos.Y) Then
-                    If Not HayAgua(X, Y) Then Exit Function
-                Else
-                    ' No puedo intercambiar con un casper que este en la orilla (Lado agua)
-                    If HayAgua(X, Y) Then Exit Function
-                End If
-                
-                ' Los admins no pueden intercambiar pos con caspers cuando estan invisibles
-                If charlist(UserCharIndex).priv > 0 And charlist(UserCharIndex).priv < 6 Then
-                    If charlist(UserCharIndex).invisible = True Then Exit Function
-                End If
-            End If
-        End With
-    End If
-   
-    If UserNavegando <> HayAgua(X, Y) Then
-        Exit Function
-    End If
-    
-    MoveToLegalPos = True
+	
 End Function
 
 Function InMapBounds(ByVal X As Integer, ByVal Y As Integer) As Boolean
@@ -1299,15 +1114,24 @@ Sub ShowNextFrame(ByVal DisplayFormTop As Integer, _
         
         '****** Update screen ******
         If UserCiego Then
-            DirectDevice.Clear 0, ByVal 0, D3DCLEAR_TARGET, 0, 1#, 0
+            Call DirectDevice.Clear(0, ByVal 0, D3DCLEAR_TARGET, 0, 1#, 0)
         Else
             Call RenderScreen(UserPos.X - AddtoUserPos.X, UserPos.Y - AddtoUserPos.Y, OffsetCounterX, OffsetCounterY)
-
         End If
 
         If Dialogos.NeedRender Then Call Dialogos.Render ' GSZAO
         Call DibujarCartel
         If DialogosClanes.Activo Then Call DialogosClanes.Draw ' GSZAO
+
+        '*********Tiempo restante para que termine el invi o el paralizar*********
+        If UserParalizado And UserParalizadoSegundosRestantes <> 0 Then
+            Call DrawText(1, 25, UserParalizadoSegundosRestantes & " segundos restantes de Paralisis", Color_Paralisis)
+        End If
+
+        If UserInvisible And UserInvisibleSegundosRestantes <> 0 Then
+            Call DrawText(1, 13, UserInvisibleSegundosRestantes & " segundos restantes de Invisibilidad", Color_Invisibilidad)
+        End If
+        '*************************************************************************
 
         ' Calculamos los FPS y los mostramos
         Call Engine_Update_FPS
@@ -1317,52 +1141,8 @@ Sub ShowNextFrame(ByVal DisplayFormTop As Integer, _
         timerTicksPerFrame = timerElapsedTime * Engine_Get_BaseSpeed
         
         Call Engine_EndScene(MainScreenRect, 0)
-        
-        '//Banco
-        If frmBancoObj.Visible Then
-            If frmBancoObj.PicBancoInv.Visible Then Call InvBanco(0).DrawInv
-            If frmBancoObj.picInv.Visible Then Call InvBanco(1).DrawInv
-        End If
     
-        '//Comercio
-        If frmComerciar.Visible Then
-            If frmComerciar.picInvNpc.Visible Then Call InvComNpc.DrawInv
-            If frmComerciar.picInvUser.Visible Then Call InvComUsu.DrawInv
-        End If
-    
-        '//Comercio entre usuarios
-        If frmComerciarUsu.Visible Then
-            If frmComerciarUsu.picInvComercio.Visible Then InvComUsu.DrawInv (1)
-            If frmComerciarUsu.picInvOfertaProp.Visible Then InvOfferComUsu(0).DrawInv (1)
-            If frmComerciarUsu.picInvOfertaOtro Then InvOfferComUsu(1).DrawInv (1)
-            If frmComerciarUsu.picInvOroProp.Visible Then InvOroComUsu(0).DrawInv (1)
-            If frmComerciarUsu.picInvOroOfertaProp.Visible Then InvOroComUsu(1).DrawInv (1)
-            If frmComerciarUsu.picInvOroOfertaOtro.Visible Then InvOroComUsu(2).DrawInv (1)
-        End If
-    
-        '//Herrero
-        If frmHerrero.Visible Then
-            If frmHerrero.picLingotes0.Visible Or frmHerrero.picMejorar0.Visible Then InvLingosHerreria(1).DrawInv (1)
-            If frmHerrero.picLingotes1.Visible Or frmHerrero.picMejorar1.Visible Then InvLingosHerreria(2).DrawInv (1)
-            If frmHerrero.picLingotes2.Visible Or frmHerrero.picMejorar2.Visible Then InvLingosHerreria(3).DrawInv (1)
-            If frmHerrero.picLingotes3.Visible Or frmHerrero.picMejorar3.Visible Then InvLingosHerreria(4).DrawInv (1)
-        End If
-    
-        '//Carpintero
-        If frmCarpinteria.Visible Then
-            If frmCarpinteria.picMaderas0.Visible Or frmCarpinteria.imgMejorar0.Visible Then InvMaderasCarpinteria(1).DrawInv (1)
-            If frmCarpinteria.picMaderas1.Visible Or frmCarpinteria.imgMejorar1.Visible Then InvMaderasCarpinteria(2).DrawInv (1)
-            If frmCarpinteria.picMaderas2.Visible Or frmCarpinteria.imgMejorar2.Visible Then InvMaderasCarpinteria(3).DrawInv (1)
-            If frmCarpinteria.picMaderas3.Visible Or frmCarpinteria.imgMejorar3.Visible Then InvMaderasCarpinteria(4).DrawInv (1)
-        End If
-    
-        '//Inventario
-        If frmMain.Visible Then
-            If frmMain.picInv.Visible Then
-                Call Inventario.DrawInv
-            End If
-        End If
-        
+        Call Inventario.DrawDragAndDrop
 
     End If
   
@@ -1393,9 +1173,7 @@ Private Function GetElapsedTime() As Single
     Call QueryPerformanceCounter(end_time)
 End Function
 
-Private Sub CharRender(ByVal CharIndex As Long, _
-                       ByVal PixelOffsetX As Integer, _
-                       ByVal PixelOffsetY As Integer)
+Private Sub CharRender(ByVal CharIndex As Long, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer)
 
     '***************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
@@ -1403,6 +1181,7 @@ Private Sub CharRender(ByVal CharIndex As Long, _
     'Draw char's to screen without offcentering them
     '16/09/2010: ZaMa - Ya no se dibujan los bodies cuando estan invisibles.
     '***************************************************
+    
     Dim moved As Boolean
     
     With charlist(CharIndex)
@@ -1529,7 +1308,7 @@ Private Sub CharRender(ByVal CharIndex As Long, _
 
         Else
 
-            If esGM(Val(CharIndex)) Then
+            If EsGM(Val(CharIndex)) Then
                 Call Engine_Long_To_RGB_List(ColorFinal(), D3DColorARGB(150, 200, 200, 0))
             Else
 
@@ -1542,7 +1321,7 @@ Private Sub CharRender(ByVal CharIndex As Long, _
             End If
 
         End If
-        
+                
         If Not .invisible Then
             Movement_Speed = 0.5
             
@@ -1550,7 +1329,7 @@ Private Sub CharRender(ByVal CharIndex As Long, _
             If .Body.Walk(.Heading).GrhIndex Then
                 Call Draw_Grh(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1)
             End If
-            
+                
             'Draw name when navigating
             If Len(.Nombre) > 0 Then
                 If Nombres Then
@@ -1563,85 +1342,75 @@ Private Sub CharRender(ByVal CharIndex As Long, _
             'Draw Head
             If .Head.Head(.Heading).GrhIndex Then
                 Call Draw_Grh(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, ColorFinal(), 0)
+            End If
                 
-                'Draw Helmet
-                If .Casco.Head(.Heading).GrhIndex Then
-                    Call Draw_Grh(.Casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, 1, ColorFinal(), 0)
-                End If
+            'Draw Helmet
+            If .Casco.Head(.Heading).GrhIndex Then
+                Call Draw_Grh(.Casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X + 1, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, 1, ColorFinal(), 0)
+            End If
                 
-                'Draw Weapon
-                If .Arma.WeaponWalk(.Heading).GrhIndex Then
-                    Call Draw_Grh(.Arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1)
-                End If
+            'Draw Weapon
+            If .Arma.WeaponWalk(.Heading).GrhIndex Then
+                Call Draw_Grh(.Arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1)
+            End If
                 
-                'Draw Shield
-                If .Escudo.ShieldWalk(.Heading).GrhIndex Then
-                    Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1)
-                End If
-            
-                'Draw name over head
-                If LenB(.Nombre) > 0 Then
-                    If Nombres Then
-                        Call RenderName(CharIndex, PixelOffsetX, PixelOffsetY)
-                    End If
-                End If
-                
-                '************Particulas************
-                Dim i As Integer
-                If .Particle_Count > 0 Then
-
-                    For i = 1 To .Particle_Count
-                    
-                        If .Particle_Group(i) > 0 Then
-                            Call mDx8_Particulas.Particle_Group_Render(.Particle_Group(i), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY)
-                        End If
-                        
-                    Next i
-
-                End If
-            
-            Else 'Usuario invisible
-        
-                If CharIndex = UserCharIndex Or mid$(charlist(CharIndex).Nombre, getTagPosition(.Nombre)) = mid$(charlist(UserCharIndex).Nombre, getTagPosition(charlist(UserCharIndex).Nombre)) And Len(mid$(charlist(CharIndex).Nombre, getTagPosition(.Nombre))) > 0 Then
-                
-                    Movement_Speed = 0.5
-                
-                    'Draw Body
-                    If .Body.Walk(.Heading).GrhIndex Then
-                        Call Draw_Grh(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
-                    End If
-                
-                    'Draw Head
-                    If .Head.Head(.Heading).GrhIndex Then
-                        Call Draw_Grh(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, ColorFinal(), 0, True)
-                        
-                        'Draw Helmet
-                        If .Casco.Head(.Heading).GrhIndex Then Call Draw_Grh(.Casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, 1, ColorFinal(), 0, True)
-                    
-                        'Draw Weapon
-                        If .Arma.WeaponWalk(.Heading).GrhIndex Then Call Draw_Grh(.Arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
-                    
-                        'Draw Shield
-                        If .Escudo.ShieldWalk(.Heading).GrhIndex Then Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
-                
-                        'Draw name over head
-                        If LenB(.Nombre) > 0 Then
-                            If Nombres Then
-                                Call RenderName(CharIndex, PixelOffsetX, PixelOffsetY, True)
-                            End If
-
-                        End If
-
-                    End If
-
-                End If
-            
+            'Draw Shield
+            If .Escudo.ShieldWalk(.Heading).GrhIndex Then
+                Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1)
             End If
 
+            If ClientSetup.UsarSombras Then
+
+                Call RenderSombras(CharIndex, PixelOffsetX, PixelOffsetY)
+
+                Call RenderReflejos(CharIndex, PixelOffsetX, PixelOffsetY)
+
+            End If
+
+            If ClientSetup.ParticleEngine Then
+
+                Call RenderCharParticles(CharIndex, PixelOffsetX, PixelOffsetY)
+
+            End If
+            
+            'Draw name over head
+            If LenB(.Nombre) > 0 Then
+                If Nombres Then
+                    Call RenderName(CharIndex, PixelOffsetX, PixelOffsetY)
+                End If
+            End If
+            
+        Else 'Usuario Invisible - Lo renderizamos con cierta transparencia activando Alpha.
+            
+            'Draw Transparent Body
+            If .Body.Walk(.Heading).GrhIndex Then
+                Call Draw_Grh(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
+            End If
+
+            'Draw Transparent Head
+            If .Head.Head(.Heading).GrhIndex Then
+                Call Draw_Grh(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, ColorFinal(), 0, True)
+            End If
+                
+            'Draw Transparent Helmet
+            If .Casco.Head(.Heading).GrhIndex Then
+                Call Draw_Grh(.Casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X + 1, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, 1, ColorFinal(), 0, True)
+            End If
+                
+            'Draw Transparent Weapon
+            If .Arma.WeaponWalk(.Heading).GrhIndex Then
+                Call Draw_Grh(.Arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
+            End If
+                
+            'Draw Transparent Shield
+            If .Escudo.ShieldWalk(.Heading).GrhIndex Then
+                Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, ColorFinal(), 1, True)
+            End If
+            
         End If
         
-        'Update dialogs
-        Call Dialogos.UpdateDialogPos(PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, CharIndex) '34 son los pixeles del grh de la cabeza que quedan superpuestos al cuerpo
+        'Update dialogs - 34 son los pixeles del grh de la cabeza que quedan superpuestos al cuerpo.
+        Call Dialogos.UpdateDialogPos(PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y + OFFSET_HEAD, CharIndex)
         
         Movement_Speed = 1
         
@@ -1658,39 +1427,203 @@ Private Sub CharRender(ByVal CharIndex As Long, _
     
 End Sub
 
-Private Sub RenderName(ByVal CharIndex As Long, ByVal X As Integer, ByVal Y As Integer, Optional ByVal Invi As Boolean = False)
-    Dim Pos As Integer
-    Dim line As String
+Private Sub RenderSombras(ByVal CharIndex As Integer, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer)
+'****************************************************
+' Renderizamos las sombras sobre el char
+'****************************************************
+   
+    With charlist(CharIndex)
+    
+        'Draw Body
+        If .Body.Walk(.Heading).GrhIndex Then
+            Call Draw_Grh(.Body.Walk(.Heading), PixelOffsetX + 10, PixelOffsetY + 1, 1, Color_Shadow(), 1, False, 210)
+        End If
+     
+        'Draw Head
+        If .Head.Head(.Heading).GrhIndex Then
+            Call Draw_Grh(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X + 12, PixelOffsetY + .Body.HeadOffset.Y + 1, 1, Color_Shadow(), 0, False, 210)
+        End If
+
+        'Draw Helmet
+        If .Casco.Head(.Heading).GrhIndex Then
+            Call Draw_Grh(.Casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X + 22, PixelOffsetY + .Body.HeadOffset.Y - 31, 1, Color_Shadow(), 0, False, 210)
+        End If
+                
+        'Draw Weapon
+        If .Arma.WeaponWalk(.Heading).GrhIndex Then
+            Call Draw_Grh(.Arma.WeaponWalk(.Heading), PixelOffsetX + 10, PixelOffsetY + 1, 1, Color_Shadow(), 1, False, 210)
+        End If
+                
+        'Draw Shield
+        If .Escudo.ShieldWalk(.Heading).GrhIndex Then
+            Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX + 10, PixelOffsetY + 1, 1, Color_Shadow(), 1, False, 210)
+        End If
+        
+    End With
+    
+End Sub
+
+Private Sub RenderCharParticles(ByVal CharIndex As Integer, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer)
+'****************************************************
+' Renderizamos las particulas fijadas en el char
+'****************************************************
+
+    Dim i As Integer
+    
+    With charlist(CharIndex)
+
+        If .Particle_Count > 0 Then
+
+            For i = 1 To .Particle_Count
+                        
+                If .Particle_Group(i) > 0 Then
+                    Call mDx8_Particulas.Particle_Group_Render(.Particle_Group(i), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY)
+                End If
+                            
+            Next i
+    
+        End If
+    
+    End With
+  
+End Sub
+
+Private Sub RenderReflejos(ByVal CharIndex As Integer, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer)
+'****************************************************
+' Renderizamos el char reflejado en el agua
+'****************************************************
+    
+    With charlist(CharIndex)
+
+        If HayAgua(.Pos.X, .Pos.Y + 1) Then
+                    
+            Dim GetInverseHeading As Byte
+            Dim ColorFinal(0 To 3) As Long
+            
+            'Se anula el viejo reflejo usando Alpha para remplazarlo por transparencia (50%)
+            Call Engine_Long_To_RGB_List(ColorFinal(), D3DColorARGB(100, 128, 128, 128))
+
+            Select Case .Heading
+    
+                Case E_Heading.WEST
+                    GetInverseHeading = E_Heading.EAST
+
+                Case E_Heading.EAST
+                    GetInverseHeading = E_Heading.WEST
+
+                Case Else
+                    GetInverseHeading = .Heading
+    
+            End Select
+                    
+            '************ Renderizamos animaciones en los reflejos ************
+            If .Moving Then
+                .Body.Walk(GetInverseHeading).Started = 1
+                .Arma.WeaponWalk(GetInverseHeading).Started = 1
+                .Escudo.ShieldWalk(GetInverseHeading).Started = 1
+                       
+            Else
+                .Body.Walk(GetInverseHeading).Started = 0
+                .Escudo.ShieldWalk(GetInverseHeading).Started = 0
+                       
+            End If
+                    
+            'Animacion del reflejo del arma.
+            If .attacking = False And .Moving = False Then
+                .Arma.WeaponWalk(GetInverseHeading).Started = 0
+                .Arma.WeaponWalk(GetInverseHeading).FrameCounter = 0
+            End If
+            
+            If .attacking And .Arma.WeaponWalk(GetInverseHeading).Started = 0 Then
+                .Arma.WeaponWalk(GetInverseHeading).Started = 1
+                .Arma.WeaponWalk(GetInverseHeading).FrameCounter = 1
+                       
+            ElseIf .Arma.WeaponWalk(GetInverseHeading).FrameCounter > 4 And .attacking Then
+                .attacking = False
+    
+            End If
+            '************ Renderizamos animaciones en los reflejos ************
+                    
+            If Not EsNPC(Val(CharIndex)) Then
+
+                'Se anulo el uso de UserNavegando ya que los reflejos de todos los personajes variaban dependiendo de si el usuario navegaba o no.
+                If ((.iHead = 0) Or (.iBody = eCabezas.FRAGATA_FANTASMAL)) Then
+
+                    'Reflejo Body Navegando
+                    Call Draw_Grh(.Body.Walk(GetInverseHeading), PixelOffsetX, PixelOffsetY + 80, 1, ColorFinal(), 1, False, 360)
+                            
+                Else
+                            
+                    'Reflejo Body
+                    Call Draw_Grh(.Body.Walk(GetInverseHeading), PixelOffsetX, PixelOffsetY + 44, 1, ColorFinal(), 1, False, 360)
+
+                End If
+                        
+                'Reflejo Head
+                If .Head.Head(GetInverseHeading).GrhIndex Then
+                    Call Draw_Grh(.Head.Head(GetInverseHeading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + 51, 1, ColorFinal(), 1, False, 360)
+                End If
+                        
+                'Reflejo Helmet
+                If .Casco.Head(GetInverseHeading).GrhIndex Then
+                    Call Draw_Grh(.Casco.Head(GetInverseHeading), PixelOffsetX + .Body.HeadOffset.X - 1, PixelOffsetY + .Body.HeadOffset.Y + 55, 1, ColorFinal(), 1, False, 360)
+                End If
+                        
+                'Reflejo Shield
+                If .Arma.WeaponWalk(GetInverseHeading).GrhIndex Then
+                    Call Draw_Grh(.Escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY + 44, 1, ColorFinal(), 1, False, 360)
+                End If
+                        
+                'Reflejo Weapon
+                If .Arma.WeaponWalk(GetInverseHeading).GrhIndex Then
+                    Call Draw_Grh(.Arma.WeaponWalk(GetInverseHeading), PixelOffsetX, PixelOffsetY + 44, 1, ColorFinal(), 1, False, 360)
+                End If
+                        
+            End If
+
+        End If
+        
+    End With
+    
+End Sub
+
+Private Sub RenderName(ByVal CharIndex As Long, _
+                       ByVal X As Integer, _
+                       ByVal Y As Integer, _
+                       Optional ByVal Invi As Boolean = False)
+    Dim Pos   As Integer
+    Dim line  As String
     Dim Color As Long
    
     With charlist(CharIndex)
-            Pos = getTagPosition(.Nombre)
+        Pos = getTagPosition(.Nombre)
     
-            If .priv = 0 Then
-                    If .muerto Then
-                        Color = D3DColorARGB(255, 220, 220, 255)
-                    Else
-                        If .Criminal Then
-                            Color = ColoresPJ(50)
-                        Else
-                            Color = ColoresPJ(49)
-                        End If
-                    End If
+        If .priv = 0 Then
+            If .muerto Then
+                Color = D3DColorARGB(255, 220, 220, 255)
             Else
-                Color = ColoresPJ(.priv)
-            End If
-    
-            If Invi Then
-                Color = D3DColorARGB(180, 150, 180, 220)
-            End If
 
-            'Nick
-            line = Left$(.Nombre, Pos - 2)
-            Call DrawText(X + 16, Y + 30, line, Color, True)
+                If .Criminal Then
+                    Color = ColoresPJ(50)
+                Else
+                    Color = ColoresPJ(49)
+                End If
+            End If
+        Else
+            Color = ColoresPJ(.priv)
+        End If
+    
+        If Invi Then
+            Color = D3DColorARGB(180, 150, 180, 220)
+        End If
+
+        'Nick
+        line = Left$(.Nombre, Pos - 2)
+        Call DrawText(X + 16, Y + 30, line, Color, True)
             
-            'Clan
-            line = mid$(.Nombre, Pos)
-            Call DrawText(X + 16, Y + 45, line, Color, True)
+        'Clan
+        line = mid$(.Nombre, Pos)
+        Call DrawText(X + 16, Y + 45, line, Color, True)
 
     End With
 End Sub
@@ -1761,14 +1694,14 @@ Public Sub RenderItem(ByVal hWndDest As Long, ByVal GrhIndex As Long)
     
 End Sub
 
-Sub Draw_GrhIndex(ByVal GrhIndex As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal Center As Byte, ByRef Color_List() As Long, Optional ByVal angle As Single = 0, Optional ByVal Alpha As Boolean = False)
+Sub Draw_GrhIndex(ByVal GrhIndex As Long, ByVal X As Integer, ByVal Y As Integer, ByVal Center As Byte, ByRef Color_List() As Long, Optional ByVal angle As Single = 0, Optional ByVal Alpha As Boolean = False)
     Dim SourceRect As RECT
     
     With GrhData(GrhIndex)
         'Center Grh over X,Y pos
         If Center Then
             If .TileWidth <> 1 Then
-                X = X - Int(.TileWidth * TilePixelWidth / 2) + TilePixelWidth \ 2
+                X = X - (.pixelWidth - TilePixelWidth) \ 2
             End If
             
             If .TileHeight <> 1 Then
@@ -1786,7 +1719,7 @@ Sub Draw_Grh(ByRef Grh As Grh, ByVal X As Integer, ByVal Y As Integer, ByVal Cen
 '*****************************************************************
 'Draws a GRH transparently to a X and Y position
 '*****************************************************************
-    Dim CurrentGrhIndex As Integer
+    Dim CurrentGrhIndex As Long
     
     If Grh.GrhIndex = 0 Then Exit Sub
     
@@ -1817,7 +1750,7 @@ On Error GoTo Error
         'Center Grh over X,Y pos
         If Center Then
             If .TileWidth <> 1 Then
-                X = X - Int(.TileWidth * TilePixelWidth / 2) + TilePixelWidth \ 2
+                X = X - (.pixelWidth - TilePixelWidth) \ 2
             End If
             
             If .TileHeight <> 1 Then

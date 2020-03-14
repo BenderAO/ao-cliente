@@ -1147,7 +1147,7 @@
     },
     "CERRAR": {
         "TEXTOS": [
-            "Regresar a la pantalla de inicio",
+            "Cambiar personaje",
             "Salir del Juego",
             "Salir [ESC]"
         ]
@@ -1178,6 +1178,9 @@
     "BTN_CODIGO_FUENTE": {
         "TEXTO": "Codigo Fuente"
     },
+    "BTN_CREDITOS": {
+        "TEXTO": "Creditos"
+    },
     "BTN_CONECTARSE": {
         "TEXTO": "Conectarse"
     },
@@ -1202,7 +1205,7 @@
     "LBL_FORO": {
         "TEXTO": "Ver Foro"
     },
-    "LBL_SALIR": {
+    "BTN_SALIR": {
         "TEXTO": "Salir"
     },
     "LBL_TECLAS": {
@@ -1256,32 +1259,32 @@
     "FRMBUSCAR_TITLE": {
         "TEXTO": "Buscador"
     },
-    "FRMBUSCAR_CREAR": {
-        "TEXTO": "Crear"
-    },
-    "FRMBUSCAR_CREARNPCS": {
-        "TEXTO": "Npcs"
-    },
-    "FRMBUSCAR_CREAROBJETOS": {
-        "TEXTO": "Objetos"
-    },
     "FRMBUSCAR_CANTIDAD": {
         "TEXTO": "Cantidad"
     },
-    "FRMBUSCAR_RESPAWN": {
-        "TEXTO": "Respawn"
+    "FRMBUSCAR_INGRESE_CANTIDAD": {
+        "TEXTO": "Ingrese la cantidad de objetos"
     },
     "FRMBUSCAR_BUSCAROBJETO": {
-        "TEXTO": "Buscar Objeto"
+        "TEXTO": "Buscar Objetos"
     },
     "FRMBUSCAR_BUSCARNPCS": {
-        "TEXTO": "Buscar Npcs"
+        "TEXTO": "Buscar NPCs"
+    },
+    "FRMBUSCAR_INFO_OBJ": {
+        "TEXTO": "<Clic derecho sobre el objeto para crear>"
+    },
+    "FRMBUSCAR_INFO_NPC": {
+        "TEXTO": "<Clic derecho sobre el NPC para invocar>"
     },
     "FRMBUSCAR_LIMPIARLISTAS": {
-        "TEXTO": "Limpiar Listas"
+        "TEXTO": "Limpiar lista"
     },
     "FRMBUSCAR_SELECCIONE_ITEM": {
-        "TEXTO": "Seleccione un item de la lista antes de hacer click en el boton crear item."
+        "TEXTO": "Primero seleccione un item de la lista."
+    },
+    "FRMBUSCAR_BUSQUEDA_TOOLTIP": {
+        "TEXTO": "Ingresa parte del nombre del objeto o NPC a buscar"
     },
     "FRM_CANTIDAD_TIRAR": {
         "TEXTO": "Tirar"
@@ -1738,5 +1741,29 @@
             178,
             237
         ]
+    },
+    "MENSAJE_MONTURA_SALIR" : {
+        "TEXTO": "No puedes caminar aqui con tu montura, bajate para poder entrar a un lugar con techo."
+    },
+    "FRMCONNECT_LBL_DESCRIPCION_SERVER" : {
+        "TEXTO": "Obteniendo datos del server por favor espere... si no los obtengo en pocos segundos y tira error significa que el servidor esta offline..."
+    },
+    "FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ" : {
+        "TEXTO": "Estas seguro que quieres borrar el personaje de tu cuenta? Esta accion no puede revertise"
+    },
+    "FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ_TITULO" : {
+        "TEXTO": "ALERTA - BORRAR PERSONAJE"
+    },
+    "FRMPANELACCOUNT_BTN_BORRAR_PERSONAJE" : {
+        "TEXTO": "Borrar Personaje"
+    },
+    "FRMPANELACCOUNT_BTN_SALIR" : {
+        "TEXTO": "Salir"
+    },
+    "FRMPANELACCOUNT_BTN_CREAR_PERSONAJE" : {
+        "TEXTO": "Crear Personaje"
+    },
+    "FRMPANELACCOUNT_BTN_CONECTAR" : {
+        "TEXTO": "Entrar"
     }
 }

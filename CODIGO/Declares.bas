@@ -68,7 +68,10 @@ Public InvComNpc As clsGraphicalInventory  ' Inventario con los items que ofrece
 Public Const MAX_LIST_ITEMS As Byte = 4
 Public InvLingosHerreria(1 To MAX_LIST_ITEMS) As clsGraphicalInventory
 Public InvMaderasCarpinteria(1 To MAX_LIST_ITEMS) As clsGraphicalInventory
-                
+Public InvObjArtesano(1 To MAX_LIST_ITEMS) As clsGraphicalInventory
+
+Public Const MAX_ITEMS_CRAFTEO As Byte = 4
+
 Public CustomKeys As clsCustomKeys
 Public CustomMessages As clsCustomMessages
 
@@ -110,6 +113,8 @@ End Enum
 Public MacroBltIndex As Integer
 
 Public Const NUMATRIBUTES As Byte = 5
+
+Public Const iCuerpoMuerto As Integer = 8
 
 Public Enum eCabezas
     CASPER_HEAD = 500
@@ -164,8 +169,6 @@ Public Type tServerInfo
     Ip As String
     Puerto As Integer
     Desc As String
-    Ping As String
-    Country As String
     Mundo As String
 End Type
 
@@ -201,6 +204,7 @@ Public ArmadurasHerrero() As tItemsConstruibles
 Public ObjCarpintero() As tItemsConstruibles
 Public CarpinteroMejorar() As tItemsConstruibles
 Public HerreroMejorar() As tItemsConstruibles
+Public ObjArtesano() As tItemArtesano
 
 Public UsaMacro As Boolean
 Public CnTd As Byte
@@ -320,32 +324,40 @@ Public Enum eObjType
     otWeapon = 2
     otArmadura = 3
     otArboles = 4
-    otGuita = 5
+    otOro = 5
     otPuertas = 6
     otContenedores = 7
     otCarteles = 8
     otLlaves = 9
     otForos = 10
     otPociones = 11
+    otLibros = 12 'Hacer algo con esto, no en uso
     otBebidas = 13
     otLena = 14
     otFogata = 15
-    otEscudo = 16
-    otCasco = 17
+    otescudo = 16
+    otcasco = 17
     otAnillo = 18
     otTeleport = 19
+    otMuebles = 20
+    otJoyas = 21 'Hacer algo con esto, no en uso
     otYacimiento = 22
     otMinerales = 23
     otPergaminos = 24
+    otMonturas = 25
     otInstrumentos = 26
     otYunque = 27
     otFragua = 28
+    otGemas = 29 'No en uso, hacer algo con las gemas :)
+    otFlores = 30 'No en uso, hacer algo con las flores :)
     otBarcos = 31
     otFlechas = 32
     otBotellaVacia = 33
     otBotellaLlena = 34
+    otManuales = 35
     otArbolElfico = 36
     otMochilas = 37
+    otYacimientoPez = 38
     otCualquiera = 1000
 End Enum
 
@@ -515,6 +527,7 @@ Public Enum eGMCommands
     ToggleCentinelActivated '/CENTINELAACTIVADO
     SearchNpc               '/BUSCAR
     SearchObj               '/BUSCAR
+    LimpiarMundo            '/LIMPIARMUNDO
 End Enum
 
 '
@@ -566,10 +579,8 @@ End Enum
 Type Inventory
     ObjIndex As Integer
     Name As String
-    GrhIndex As Integer
-    '[Alejo]: tipo de datos ahora es Long
+    GrhIndex As Long
     Amount As Long
-    '[/Alejo]
     Equipped As Byte
     Valor As Single
     OBJType As Integer
@@ -582,7 +593,7 @@ End Type
 Type NpCinV
     ObjIndex As Integer
     Name As String
-    GrhIndex As Integer
+    GrhIndex As Long
     Amount As Integer
     Valor As Single
     OBJType As Integer
@@ -622,7 +633,7 @@ End Type
 Type tItemsConstruibles
     Name As String
     ObjIndex As Integer
-    GrhIndex As Integer
+    GrhIndex As Long
     LinH As Integer
     LinP As Integer
     LinO As Integer
@@ -630,7 +641,22 @@ Type tItemsConstruibles
     MaderaElfica As Integer
     Upgrade As Integer
     UpgradeName As String
-    UpgradeGrhIndex As Integer
+    UpgradeGrhIndex As Long
+End Type
+
+Type tItemCrafteo
+    Name As String
+    ObjIndex As Integer
+    GrhIndex As Long
+    Amount As Integer
+End Type
+
+Type tItemArtesano
+    Name As String
+    ObjIndex As Integer
+    GrhIndex As Long
+    
+    ItemsCrafteo() As tItemCrafteo
 End Type
 
 Public Nombres As Boolean
@@ -687,7 +713,9 @@ Public bShowTutorial As Boolean
 Public FPSFLAG As Boolean
 Public pausa As Boolean
 Public UserParalizado As Boolean
+Public UserInvisible As Boolean
 Public UserNavegando As Boolean
+Public UserEquitando As Boolean
 Public UserEvento As Boolean
 Public UserHogar As eCiudad
 
@@ -734,7 +762,7 @@ Public ListaClases(1 To NUMCLASES) As String
 
 Public SkillPoints As Integer
 Public Alocados As Integer
-Public Flags() As Integer
+Public flags() As Integer
 
 Public UsingSkill As Integer
 
@@ -748,6 +776,7 @@ Public Enum E_MODO
     Dados = 3
     CrearCuenta = 4
     CambiarContrasena = 5
+    ObtenerDatosServer = 6
 End Enum
 
 Public EstadoLogin As E_MODO
@@ -794,7 +823,7 @@ End Enum
 '
 ' @param NADA nada
 ' @param BAJOTECHO bajo techo
-' @param trigger_2 ???
+' @param CASA dentro de una casa de las que se compran, para evitar limpiar items
 ' @param POSINVALIDA los npcs no pueden pisar tiles con este trigger
 ' @param ZONASEGURA no se puede robar o pelear desde este trigger
 ' @param ANTIPIQUETE
@@ -803,7 +832,7 @@ End Enum
 Public Enum eTrigger
     nada = 0
     BAJOTECHO = 1
-    trigger_2 = 2
+    CASA = 2
     POSINVALIDA = 3
     ZONASEGURA = 4
     ANTIPIQUETE = 5
@@ -830,11 +859,11 @@ Public PuertoDelServidor As String
 '******Mouse Cursor*********
 'Esto es para poder usar iconos de mouse .ani
 'https://www.gs-zone.org/temas/cursor-ani.45555/#post-375757
-Public Declare Function SetClassLong Lib "user32" Alias "SetClassLongA" (ByVal hwnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
+Public Declare Function SetClassLong Lib "user32" Alias "SetClassLongA" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
  
 Public Const GLC_HCURSOR = (-12)
 Public hSwapCursor As Long
-Public Declare Function LoadCursorFromFile Lib "user32" Alias "LoadCursorFromFileA" (ByVal lpfilename As String) As Long
+Public Declare Function LoadCursorFromFile Lib "user32" Alias "LoadCursorFromFileA" (ByVal lpFileName As String) As Long
 '******End Mouse Cursor****
 
 Public Declare Function GetTickCount Lib "kernel32" () As Long
@@ -854,17 +883,17 @@ Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" (By
 
 'Lista de cabezas
 Public Type tIndiceCabeza
-    Head(1 To 4) As Integer
+    Head(1 To 4) As Long
 End Type
 
 Public Type tIndiceCuerpo
-    Body(1 To 4) As Integer
+    Body(1 To 4) As Long
     HeadOffsetX As Integer
     HeadOffsetY As Integer
 End Type
 
 Public Type tIndiceFx
-    Animacion As Integer
+    Animacion As Long
     OffsetX As Integer
     OffsetY As Integer
 End Type
@@ -941,17 +970,17 @@ Public Const SM_CANT As Byte = 4
 Public SMStatus(SM_CANT) As Boolean
 
 'Hardcoded grhs and items
-Public Const GRH_INI_SM As Integer = 4978
+Public Const GRH_INI_SM As Long = 4978
 
-Public Const ORO_INDEX As Integer = 12
-Public Const ORO_GRH As Integer = 511
+Public Const ORO_INDEX As Long = 12
+Public Const ORO_GRH As Long = 511
 
-Public Const LH_GRH As Integer = 724
-Public Const LP_GRH As Integer = 725
-Public Const LO_GRH As Integer = 723
+Public Const LH_GRH As Long = 724
+Public Const LP_GRH As Long = 725
+Public Const LO_GRH As Long = 723
 
-Public Const MADERA_GRH As Integer = 550
-Public Const MADERA_ELFICA_GRH As Integer = 1999
+Public Const MADERA_GRH As Long = 550
+Public Const MADERA_ELFICA_GRH As Long = 1999
 
 Public picMouseIcon As Picture
 
@@ -991,3 +1020,14 @@ Public Const uAOButton_cCheckboxSmall As String = "cCheckboxSmall.bmp" ' Chico
 ' * Configuracion de estilo de controles
 
 Public JsonTips As Object
+
+'Nivel Maximo
+Public STAT_MAXELV As Byte
+Public IntervaloParalizado As Integer
+Public IntervaloInvisible As Integer
+
+Public UserParalizadoSegundosRestantes As Integer
+Public UserInvisibleSegundosRestantes As Integer
+
+Public QuantityServers As Integer
+Public IpApiEnabled As Boolean

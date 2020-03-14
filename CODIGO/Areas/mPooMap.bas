@@ -8,7 +8,7 @@ Attribute VB_Name = "mPooMap"
 
 Option Explicit
 
-Private Const GrhFogata As Integer = 1521
+Private Const GrhFogata As Long = 1521
 
 Public Sub Map_RemoveOldUser()
 
@@ -21,7 +21,7 @@ Public Sub Map_RemoveOldUser()
       End With
 
 End Sub
-Public Sub Map_CreateObject(ByVal X As Byte, ByVal Y As Byte, ByVal GrhIndex As Integer)
+Public Sub Map_CreateObject(ByVal X As Byte, ByVal Y As Byte, ByVal GrhIndex As Long)
 
       'Dim objgrh As Integer
         
@@ -163,10 +163,11 @@ End Sub
 Function Map_LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
       '*****************************************************************
       'Author: ZaMa
-      'Last Modify Date: 01/08/2009
+      'Last Modify Date: 12/01/2020
       'Checks to see if a tile position is legal, including if there is a casper in the tile
       '10/05/2009: ZaMa - Now you can't change position with a casper which is in the shore.
       '01/08/2009: ZaMa - Now invisible admins can't change position with caspers.
+      '12/01/2020: Recox - Now we manage monturas.
       '*****************************************************************
 
       Dim CharIndex As Integer
@@ -248,6 +249,13 @@ Function Map_LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
                
             Exit Function
 
+      End If
+
+      'TODO: Hacer function HayTecho!!!!
+      'Esta el usuario Equitando bajo un techo?
+      If UserEquitando And bTecho = True Then
+            Call ShowConsoleMsg(JsonLanguage.Item("MENSAJE_MONTURA_SALIR").Item("TEXTO"))
+            Exit Function
       End If
       
       If UserEvento Then Exit Function

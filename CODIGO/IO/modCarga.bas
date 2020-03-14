@@ -97,7 +97,7 @@ ErrorHandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo Graficos.ind no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo Graficos.ind no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -144,7 +144,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo Cabezas.ind no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo Cabezas.ind no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -192,7 +192,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo Cascos.ind no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo Cascos.ind no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -242,7 +242,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo Personajes.ind no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo Personajes.ind no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -264,19 +264,21 @@ On Error GoTo errhandler:
     For i = 1 To UBound(FxData())
         
         With FxData(i)
-            .Animacion = FileManager.GetValue("FX" & CStr(i), "Animacion")
-            .OffsetX = FileManager.GetValue("FX" & CStr(i), "OffsetX")
-            .OffsetY = FileManager.GetValue("FX" & CStr(i), "OffsetY")
+            .Animacion = Val(FileManager.GetValue("FX" & CStr(i), "Animacion"))
+            .OffsetX = Val(FileManager.GetValue("FX" & CStr(i), "OffsetX"))
+            .OffsetY = Val(FileManager.GetValue("FX" & CStr(i), "OffsetY"))
         End With
     
     Next
-        
+    
+    Set FileManager = Nothing
+    
 errhandler:
     
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo Fxs.ini no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo Fxs.ini no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -289,9 +291,10 @@ Public Sub CargarTips()
 ' Carga el JSON con los tips del juego en un objeto para su uso a lo largo del proyecto
 '************************************************************************************
 On Error GoTo errhandler:
+    
     Dim TipFile As String
-
-    TipFile = FileToString(Game.path(INIT) & "tips_" & Language & ".json")
+        TipFile = FileToString(Game.path(INIT) & "tips_" & Language & ".json")
+    
     Set JsonTips = JSON.parse(TipFile)
 
 errhandler:
@@ -336,7 +339,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo fk.ind no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo fk.ind no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -369,7 +372,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo armas.dat no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo armas.dat no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -410,7 +413,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo colores.dat no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo colores.dat no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -445,7 +448,7 @@ errhandler:
     If Err.number <> 0 Then
         
         If Err.number = 53 Then
-            Call MsgBox("El archivo escudos.dat no existe. Por favor, reinstale el juego.", , "Argentum Online")
+            Call MsgBox("El archivo escudos.dat no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
             Call CloseClient
         End If
         
@@ -469,23 +472,29 @@ On Error GoTo errorH
     NumHechizos = Val(FileManager.GetValue("INIT", "NumHechizos"))
  
     ReDim Hechizos(1 To NumHechizos) As tHechizos
+    
     For J = 1 To NumHechizos
+        
         With Hechizos(J)
             .Desc = FileManager.GetValue("HECHIZO" & J, "Desc")
             .PalabrasMagicas = FileManager.GetValue("HECHIZO" & J, "PalabrasMagicas")
             .Nombre = FileManager.GetValue("HECHIZO" & J, "Nombre")
-            .SkillRequerido = FileManager.GetValue("HECHIZO" & J, "MinSkill")
+            .SkillRequerido = Val(FileManager.GetValue("HECHIZO" & J, "MinSkill"))
          
             If J <> 38 And J <> 39 Then
-                .EnergiaRequerida = FileManager.GetValue("HECHIZO" & J, "StaRequerido")
+                
+                .EnergiaRequerida = Val(FileManager.GetValue("HECHIZO" & J, "StaRequerido"))
                  
                 .HechiceroMsg = FileManager.GetValue("HECHIZO" & J, "HechizeroMsg")
-                .ManaRequerida = FileManager.GetValue("HECHIZO" & J, "ManaRequerido")
+                .ManaRequerida = Val(FileManager.GetValue("HECHIZO" & J, "ManaRequerido"))
              
                 .PropioMsg = FileManager.GetValue("HECHIZO" & J, "PropioMsg")
                 .TargetMsg = FileManager.GetValue("HECHIZO" & J, "TargetMsg")
+                
             End If
+            
         End With
+        
     Next J
     
     Set FileManager = Nothing
@@ -496,11 +505,19 @@ errorH:
 
     If Err.number <> 0 Then
         
-        If Err.number = 53 Then
-            Call MsgBox("El archivo Hechizos.dat no existe. Por favor, reinstale el juego.", , "Argentum Online")
-            Call CloseClient
-        End If
+        Select Case Err.number
+            
+            Case 9
+                Call MsgBox("Error cargando el archivo Hechizos.dat (Hechizo " & J & "). Por favor, avise a los administradores enviandoles el archivo Errores.log que se encuentra en la carpeta del cliente.", , "Argentum Online Libre")
+                Call LogError(Err.number, Err.Description, "CargarHechizos")
+            
+            Case 53
+                Call MsgBox("El archivo Hechizos.dat no existe. Por favor, reinstale el juego.", , "Argentum Online Libre")
         
+        End Select
+        
+        Call CloseClient
+
     End If
-    
+
 End Sub

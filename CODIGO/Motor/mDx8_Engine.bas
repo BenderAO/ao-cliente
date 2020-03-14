@@ -34,9 +34,6 @@ Public TileBufferSize As Integer
 Public ScreenWidth As Long
 Public ScreenHeight As Long
 
-Public Const HeadOffsetAltos As Integer = -8
-Public Const HeadOffsetBajos As Integer = 2
-
 Public MainScreenRect As RECT
 
 Public Type TLVERTEX
@@ -195,7 +192,10 @@ On Error Resume Next
     
     '   Clean Texture
     Call DirectDevice.SetTexture(0, Nothing)
-
+    
+    '   Borrar DBI Surface
+    Call CleanDrawBuffer
+    
     '   Erase Data
     Erase MapData()
     Erase charlist()
@@ -231,6 +231,8 @@ Public Sub Engine_DirectX8_Aditional_Init()
     Call Engine_Long_To_RGB_List(Normal_RGBList(), -1)
     Call Engine_Long_To_RGB_List(Color_Shadow(), D3DColorARGB(50, 0, 0, 0))
     Call Engine_Long_To_RGB_List(Color_Arbol(), D3DColorARGB(100, 100, 100, 100))
+    Color_Paralisis = D3DColorARGB(180, 230, 230, 250)
+    Color_Invisibilidad = D3DColorARGB(180, 236, 136, 66)
     
     ' Inicializamos otros sistemas.
     Call mDx8_Text.Engine_Init_FontTextures
@@ -238,6 +240,9 @@ Public Sub Engine_DirectX8_Aditional_Init()
     Call mDx8_Auras.Load_Auras
     Call mDx8_Clima.Init_MeteoEngine
     Call mDx8_Dibujado.Damage_Initialize
+    
+    ' Inicializa DIB surface, un buffer usado para dejar imagenes estaticas en PictureBox
+    Call PrepareDrawBuffer
     
 End Sub
 
@@ -665,69 +670,6 @@ Public Sub Engine_Update_FPS()
 
     End If
 
-End Sub
-
-Public Sub DrawPJ(ByVal Index As Byte)
-
-    If LenB(cPJ(Index).Nombre) = 0 Then Exit Sub
-    DoEvents
-    
-    Dim cColor As Long
-    
-    If cPJ(Index).GameMaster Then
-        cColor = 2004510
-    Else
-        cColor = IIf(cPJ(Index).Criminal, 255, 16744448)
-    End If
-
-    frmPanelAccount.lblAccData(Index).Caption = cPJ(Index).Nombre
-    frmPanelAccount.lblAccData(Index).ForeColor = cColor
-    
-    Dim Init_X As Integer
-    Dim Init_Y As Integer
-    Dim Head_OffSet As Integer
-    Dim PixelOffsetX As Integer
-    Dim PixelOffsetY As Integer
-    Dim RE As RECT
-
-    RE.Left = 0
-    RE.Top = 0
-    RE.Bottom = 80
-    RE.Right = 76
-
-    Init_X = 25
-    Init_Y = 20
-    
-    Call Engine_BeginScene
-
-    If cPJ(Index).Body <> 0 Then
-        If cPJ(Index).Race <> eRaza.Gnomo Or cPJ(Index).Race <> eRaza.Enano Then
-            Head_OffSet = HeadOffsetAltos
-        Else
-            Head_OffSet = HeadOffsetBajos
-        End If
-    
-        Call Draw_Grh(BodyData(cPJ(Index).Body).Walk(3), PixelOffsetX + Init_X, PixelOffsetY + Init_Y, 0, Normal_RGBList(), 0)
-
-        If cPJ(Index).Head <> 0 Then
-            Call Draw_Grh(HeadData(cPJ(Index).Head).Head(3), PixelOffsetX + Init_X + 4, PixelOffsetY + Init_Y + Head_OffSet, 0, Normal_RGBList(), 0)
-        End If
-
-        If cPJ(Index).helmet <> 0 Then
-            Call Draw_Grh(CascoAnimData(cPJ(Index).helmet).Head(3), PixelOffsetX + Init_X + 4, PixelOffsetY + Init_Y + Head_OffSet, 0, Normal_RGBList(), 0)
-        End If
-
-        If cPJ(Index).weapon <> 0 Then
-            Call Draw_Grh(WeaponAnimData(cPJ(Index).weapon).WeaponWalk(3), PixelOffsetX + Init_X, PixelOffsetY + Init_Y, 0, Normal_RGBList(), 0)
-        End If
-
-        If cPJ(Index).shield <> 0 Then
-            Call Draw_Grh(ShieldAnimData(cPJ(Index).shield).ShieldWalk(3), PixelOffsetX + Init_X, PixelOffsetY + Init_Y, 0, Normal_RGBList(), 0)
-        End If
-    End If
-
-    Call Engine_EndScene(RE, frmPanelAccount.picChar(Index - 1).hWnd)
-    
 End Sub
 
 Public Function Engine_GetAngle(ByVal CenterX As Integer, ByVal CenterY As Integer, ByVal TargetX As Integer, ByVal TargetY As Integer) As Single

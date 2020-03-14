@@ -14,9 +14,9 @@ Begin VB.Form frmPanelAccount
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "frmPanelAccount.frx":0000
-   ScaleHeight     =   770.878
-   ScaleMode       =   0  'User
-   ScaleWidth      =   808.081
+   ScaleHeight     =   600
+   ScaleMode       =   3  'Pixel
+   ScaleWidth      =   800
    StartUpPosition =   2  'CenterScreen
    Begin AOLibre.uAOButton uAOBorrarPersonaje 
       Height          =   615
@@ -52,8 +52,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   9
       Left            =   8760
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   9
       Top             =   3570
       Width           =   1140
@@ -66,8 +67,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   8
       Left            =   7005
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   8
       Top             =   3570
       Width           =   1140
@@ -80,8 +82,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   7
       Left            =   5355
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   7
       Top             =   3570
       Width           =   1140
@@ -94,8 +97,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   6
       Left            =   3660
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   6
       Top             =   3570
       Width           =   1140
@@ -108,8 +112,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   5
       Left            =   1965
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   5
       Top             =   3570
       Width           =   1140
@@ -122,8 +127,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   4
       Left            =   8760
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   4
       Top             =   1695
       Width           =   1140
@@ -136,8 +142,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   3
       Left            =   7005
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   3
       Top             =   1695
       Width           =   1140
@@ -150,8 +157,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   2
       Left            =   5325
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   2
       Top             =   1695
       Width           =   1140
@@ -164,8 +172,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1200
       Index           =   1
       Left            =   3675
-      ScaleHeight     =   1200
-      ScaleWidth      =   1140
+      ScaleHeight     =   80
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   1
       Top             =   1695
       Width           =   1140
@@ -178,8 +187,9 @@ Begin VB.Form frmPanelAccount
       Height          =   1191
       Index           =   0
       Left            =   1920
-      ScaleHeight     =   1185
-      ScaleWidth      =   1140
+      ScaleHeight     =   79
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   76
       TabIndex        =   0
       Top             =   1695
       Width           =   1140
@@ -627,7 +637,7 @@ Private Sub Form_Load()
 
     Unload frmConnect
 
-   ' Call LoadTextsForm
+    Call LoadTextsForm
     Call LoadAOCustomControlsPictures(Me)
 
     Me.Picture = LoadPicture(Game.path(Interfaces) & "frmPanelAccount.jpg")
@@ -648,6 +658,13 @@ Private Sub Form_Load()
 
 End Sub
 
+Private Sub LoadTextsForm()
+   Me.uAOBorrarPersonaje.Caption = JsonLanguage.item("FRMPANELACCOUNT_BTN_BORRAR_PERSONAJE").item("TEXTO")
+   Me.uAOConectar.Caption = JsonLanguage.item("FRMPANELACCOUNT_BTN_CONECTAR").item("TEXTO")
+   Me.uAOCrearPersonaje.Caption = JsonLanguage.item("FRMPANELACCOUNT_BTN_CREAR_PERSONAJE").item("TEXTO")
+   Me.uAOSalir.Caption = JsonLanguage.item("FRMPANELACCOUNT_BTN_SALIR").item("TEXTO")
+End Sub
+
 Private Sub lblName_Click(Index As Integer)
     Seleccionado = Index
 End Sub
@@ -658,7 +675,7 @@ Private Sub uAOBorrarPersonaje_Click()
         Exit Sub
     End If
 
-   If MsgBox("Estas seguro que quieres borrar el personaje de tu cuenta? Esta accion no puede revertise", vbYesNo, "BORRAR PERSONAJE") = vbYes Then
+   If MsgBox(JsonLanguage.item("FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ").item("TEXTO"), vbYesNo, JsonLanguage.item("FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ_TITULO").item("TEXTO")) = vbYes Then
     
       If Not frmMain.Client.State = sckConnected Then
          MsgBox JsonLanguage.item("ERROR_CONN_LOST").item("TEXTO")
@@ -667,8 +684,9 @@ Private Sub uAOBorrarPersonaje_Click()
          NumberOfCharacters = 0
          Unload Me
       Else
-         UserName = lblAccData(Seleccionado).Caption
+         UserName = cPJ(Seleccionado).Nombre
          Call WriteDeleteChar
+         
       End If
 
    End If

@@ -377,8 +377,6 @@ Private Sub CheckKeys()
             Call Char_UserPos
         End If
 
-        Call frmMain.ActualizarMiniMapa   'integrado por ReyarB
-        
     End If
 End Sub
 
@@ -436,31 +434,32 @@ Sub SwitchMap(ByVal Map As Integer)
             ByFlags = fileBuff.getByte()
 
             With MapData(X, Y)
-            
+                
+                'Layer 1
                 .Blocked = (ByFlags And 1)
-                .Graphic(1).GrhIndex = fileBuff.getInteger()
-                InitGrh .Graphic(1), .Graphic(1).GrhIndex
+                .Graphic(1).GrhIndex = fileBuff.getLong()
+                Call InitGrh(.Graphic(1), .Graphic(1).GrhIndex)
            
                 'Layer 2 used?
                 If ByFlags And 2 Then
-                    .Graphic(2).GrhIndex = fileBuff.getInteger()
-                    InitGrh .Graphic(2), .Graphic(2).GrhIndex
+                    .Graphic(2).GrhIndex = fileBuff.getLong()
+                    Call InitGrh(.Graphic(2), .Graphic(2).GrhIndex)
                 Else
                     .Graphic(2).GrhIndex = 0
                 End If
                
                 'Layer 3 used?
                 If ByFlags And 4 Then
-                    .Graphic(3).GrhIndex = fileBuff.getInteger()
-                    InitGrh .Graphic(3), .Graphic(3).GrhIndex
+                    .Graphic(3).GrhIndex = fileBuff.getLong()
+                    Call InitGrh(.Graphic(3), .Graphic(3).GrhIndex)
                 Else
                     .Graphic(3).GrhIndex = 0
                 End If
                
                 'Layer 4 used?
                 If ByFlags And 8 Then
-                    .Graphic(4).GrhIndex = fileBuff.getInteger()
-                    InitGrh .Graphic(4), .Graphic(4).GrhIndex
+                    .Graphic(4).GrhIndex = fileBuff.getLong()
+                    Call InitGrh(.Graphic(4), .Graphic(4).GrhIndex)
                 Else
                     .Graphic(4).GrhIndex = 0
                 End If
@@ -581,20 +580,6 @@ Function FileExist(ByVal File As String, ByVal FileType As VbFileAttribute) As B
     FileExist = (Dir$(File, FileType) <> "")
 End Function
 
-Public Function IsIp(ByVal Ip As String) As Boolean
-    Dim i As Long
-    Dim Upper_serversLst As Long
-        Upper_serversLst = UBound(ServersLst)
-    
-    For i = 1 To Upper_serversLst
-        If ServersLst(i).Ip = Ip Then
-            IsIp = True
-            Exit Function
-        End If
-    Next i
-    
-End Function
-
 Private Function GetCountryFromIp(ByVal Ip As String) As String
 '********************************
 'Author: Recox
@@ -621,103 +606,6 @@ On Error Resume Next
     GetCountryFromIp = JsonObject.item("country")
     
     Set Inet = Nothing
-End Function
-
-Public Sub CargarServidores()
-'********************************
-'Author: Unknown
-'Last Modification: 21/12/2019
-'Last Modified by: Recox
-'Added Instruction "CloseClient" before End so the mutex is cleared (Rapsodius)
-'Added IP Api to get the country of the IP. (Recox)
-'Get ping from server (Recox)
-'********************************
-On Error GoTo errorH
-    Dim File As String
-    Dim Quantity As Integer
-    Dim i As Integer
-    Dim CountryCode As String
-    Dim IpApiEnabled As Boolean
-    Dim DoPingsEnabled As Boolean
-    
-    File = Game.path(INIT) & "sinfo.dat"
-    Quantity = Val(GetVar(File, "INIT", "Cant"))
-    IpApiEnabled = GetVar(Game.path(INIT) & "Config.ini", "Parameters", "IpApiEnabled")
-    DoPingsEnabled = GetVar(Game.path(INIT) & "Config.ini", "Parameters", "DoPingsEnabled")
-    
-    frmConnect.lstServers.Clear
-    
-    ReDim ServersLst(1 To Quantity) As tServerInfo
-    For i = 1 To Quantity
-        Dim CurrentIp As String
-        CurrentIp = Trim$(GetVar(File, "S" & i, "Ip"))
-        
-        If IpApiEnabled Then
-
-           'If is not numeric do a url transformation
-            If CheckIfIpIsNumeric(CurrentIp) = False Then
-                CurrentIp = GetIPFromHostName(CurrentIp)
-            End If
-
-            CountryCode = GetCountryCode(CurrentIp)
-            ServersLst(i).Desc = CountryCode & " - " & GetVar(File, "S" & i, "Desc")
-        Else
-            ServersLst(i).Desc = GetVar(File, "S" & i, "Desc")
-        End If
-        
-        ServersLst(i).Ip = GetVar(File, "S" & i, "Ip")
-        ServersLst(i).Puerto = CInt(GetVar(File, "S" & i, "PJ"))
-        ServersLst(i).Mundo = GetVar(File, "S" & i, "MUNDO")
-        'ServersLst(i).Ping = PingAddress(CurrentIp, "SomeRandomText")
-        'ServersLst(i).Country = CountryCode
-
-        'We should delete this validations and append text to the desc when we start working in something more suitable
-        'in the UI to show the Pings, Country, Desc, etc.
-        'All this functions are in the CODIGO/modPing.bas
-        If DoPingsEnabled Then
-            ServersLst(i).Desc = PingAddress(CurrentIp, "SomeRandomText") & " " & ServersLst(i).Desc
-        End If
-
-        frmConnect.lstServers.AddItem (ServersLst(i).Desc)
-    Next i
-    
-    If CurServer = 0 Then CurServer = 1
-
-Exit Sub
-
-errorH:
-    Call MsgBox("Error cargando los servidores, actualicelos de la web", vbCritical + vbOKOnly, "Argentum Online")
-    
-    'Call CloseClient
-End Sub
-
-
-Private Function CheckIfIpIsNumeric(CurrentIp As String) As String
-    If IsNumeric(mid$(CurrentIp, 1, 1)) Then
-        CheckIfIpIsNumeric = True
-    Else
-        CheckIfIpIsNumeric = False
-    End If
-End Function
-
-Private Function GetCountryCode(CurrentIp As String) As String
-    Dim CountryCode As String
-    CountryCode = GetCountryFromIp(CurrentIp)
-
-    If LenB(CountryCode) > 0 Then
-        GetCountryCode = CountryCode
-    Else
-        GetCountryCode = "??"
-    End If
-
-End Function
-
-Public Function CurServerIp() As String
-    CurServerIp = frmConnect.IPTxt
-End Function
-
-Public Function CurServerPort() As Integer
-    CurServerPort = Val(frmConnect.PortTxt)
 End Function
 
 Sub Main()
@@ -830,7 +718,7 @@ Private Sub LoadInitialConfig()
 
     ' Mouse Icon to use in the rest of the game this one is animated
     ' We load it in frmMain but for some reason is loaded in the rest of the game
-    ' Better for us :(
+    ' Better for us :)
     Dim CursorAniDir As String
     Dim Cursor As Long
     CursorAniDir = Game.path(Graficos) & "MouseIcons\General.ani"
@@ -1227,7 +1115,12 @@ Public Sub CloseClient()
     'WyroX:
     'Guardamos antes de cerrar porque algunas configuraciones
     'no se guardan desde el menu opciones (Por ej: M=Musica)
-    Call Game.GuardarConfiguracion
+    'Fix: intentaba guardar cuando el juego cerraba por un error,
+    'antes de cargar los recursos. Me aprovecho de prgRun
+    'para saber si ya fueron cargados
+    If prgRun Then
+        Call Game.GuardarConfiguracion
+    End If
 
     'Cerramos Sockets/Winsocks/WindowsAPI
     frmMain.Client.CloseSck
@@ -1258,53 +1151,80 @@ Public Sub CloseClient()
     
 End Sub
 
+Public Function EsGM(ByVal CharIndex As Integer) As Boolean
 
-Public Function esGM(CharIndex As Integer) As Boolean
-esGM = False
-If charlist(CharIndex).priv >= 1 And charlist(CharIndex).priv <= 5 Or charlist(CharIndex).priv = 25 Then _
-    esGM = True
+    If charlist(CharIndex).priv >= 1 And charlist(CharIndex).priv <= 5 Or charlist(CharIndex).priv = 25 Then
+        EsGM = True
+    End If
+    
+    EsGM = False
+
+End Function
+
+Public Function EsNPC(ByVal CharIndex As Integer) As Boolean
+
+    If charlist(CharIndex).iHead = 0 Then
+        EsNPC = True
+    End If
+    
+    EsNPC = False
 
 End Function
 
 Public Function getTagPosition(ByVal Nick As String) As Integer
-Dim buf As Integer
-buf = InStr(Nick, "<")
-If buf > 0 Then
-    getTagPosition = buf
-    Exit Function
-End If
-buf = InStr(Nick, "[")
-If buf > 0 Then
-    getTagPosition = buf
-    Exit Function
-End If
-getTagPosition = Len(Nick) + 2
+    
+    Dim buf As Integer
+        buf = InStr(Nick, "<")
+
+    If buf > 0 Then
+        getTagPosition = buf
+        Exit Function
+    End If
+    
+    buf = InStr(Nick, "[")
+
+    If buf > 0 Then
+        getTagPosition = buf
+        Exit Function
+    End If
+    
+    getTagPosition = Len(Nick) + 2
+    
 End Function
 
 Public Sub checkText(ByVal Text As String)
-Dim Nivel As Integer
-If Right$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_TE_HA_MATADO").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_TE_HA_MATADO").item("TEXTO") Then
-    Call ScreenCapture(True)
-    Exit Sub
-End If
-If Left$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_MATADO").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_MATADO").item("TEXTO") Then
-    EsperandoLevel = True
-    Exit Sub
-End If
-If EsperandoLevel Then
-    If Right$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_PUNTOS_DE_EXPERIENCIA").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_PUNTOS_DE_EXPERIENCIA").item("TEXTO") Then
-        If CInt(mid$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_GANADO").item("TEXTO")), (Len(Text) - (Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_GANADO").item("TEXTO")))))) / 2 > ClientSetup.byMurderedLevel Then
-            Call ScreenCapture(True)
+    
+    Dim Nivel As Integer
+
+    If Right$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_TE_HA_MATADO").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_TE_HA_MATADO").item("TEXTO") Then
+        Call ScreenCapture(True)
+        Exit Sub
+    End If
+
+    If Left$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_MATADO").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_MATADO").item("TEXTO") Then
+        EsperandoLevel = True
+        Exit Sub
+    End If
+
+    If EsperandoLevel Then
+        If Right$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_PUNTOS_DE_EXPERIENCIA").item("TEXTO"))) = JsonLanguage.item("MENSAJE_FRAGSHOOTER_PUNTOS_DE_EXPERIENCIA").item("TEXTO") Then
+            If CInt(mid$(Text, Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_GANADO").item("TEXTO")), (Len(Text) - (Len(JsonLanguage.item("MENSAJE_FRAGSHOOTER_HAS_GANADO").item("TEXTO")))))) / 2 > ClientSetup.byMurderedLevel Then
+                Call ScreenCapture(True)
+            End If
         End If
     End If
-End If
-EsperandoLevel = False
+    
+    EsperandoLevel = False
+    
 End Sub
 
 Public Function getStrenghtColor() As Long
+    
     Dim m As Long
-    m = 255 / MAXATRIBUTOS
+        m = 255 / MAXATRIBUTOS
+        
     getStrenghtColor = RGB(255 - (m * UserFuerza), (m * UserFuerza), 0)
+    
 End Function
     
 Public Function getDexterityColor() As Long
@@ -1314,13 +1234,17 @@ Public Function getDexterityColor() As Long
 End Function
 
 Public Function getCharIndexByName(ByVal name As String) As Integer
-Dim i As Long
-For i = 1 To LastChar
-    If charlist(i).Nombre = name Then
-        getCharIndexByName = i
-        Exit Function
-    End If
-Next i
+    
+    Dim i As Long
+
+    For i = 1 To LastChar
+
+        If charlist(i).Nombre = name Then
+            getCharIndexByName = i
+            Exit Function
+        End If
+    Next i
+
 End Function
 
 Public Function EsAnuncio(ByVal ForumType As Byte) As Boolean
@@ -1363,28 +1287,33 @@ Public Function ForumAlignment(ByVal yForumType As Byte) As Byte
     
 End Function
 
-Public Sub ResetAllInfo()
+Public Sub ResetAllInfo(Optional ByVal UnloadForms As Boolean = True)
 
     ' Disable timers
     frmMain.Second.Enabled = False
     frmMain.macrotrabajo.Enabled = False
     Connected = False
     
-    'Unload all forms except frmMain, frmConnect and frmCrearPersonaje
-    Dim frm As Form
-    For Each frm In Forms
-        If frm.name <> frmMain.name And frm.name <> frmConnect.name And _
-            frm.name <> frmCrearPersonaje.name Then
-            
-            Unload frm
-        End If
-    Next
+    If UnloadForms Then
+        'Unload all forms except frmMain, frmConnect and frmCrearPersonaje
+        Dim frm As Form
+        For Each frm In Forms
+            If frm.name <> frmMain.name And _
+               frm.name <> frmConnect.name And _
+               frm.name <> frmCrearPersonaje.name Then
+                
+                Call Unload(frm)
+            End If
+        Next
+    End If
     
     On Local Error GoTo 0
     
-    ' Return to connection screen
-    If Not frmCrearPersonaje.Visible Then frmConnect.Visible = True
-    frmMain.Visible = False
+    If UnloadForms Then
+        ' Return to connection screen
+        If Not frmCrearPersonaje.Visible Then frmConnect.Visible = True
+        frmMain.Visible = False
+    End If
     
     'Stop audio
     Call Audio.StopWave
@@ -1430,7 +1359,10 @@ Public Sub ResetAllInfo()
     UserEmail = vbNullString
     SkillPoints = 0
     Alocados = 0
-    
+    UserEquitando = 0
+
+    Call SetSpeedUsuario
+
     ' Reset skills
     For i = 1 To NUMSKILLS
         UserSkills(i) = 0
@@ -1459,6 +1391,7 @@ Dim i As Long
         End If
     Next i
 End Function
+
 Public Function DevolverIndexHechizo(ByVal Nombre As String) As Byte
 Dim i As Long
  
@@ -1469,34 +1402,6 @@ Dim i As Long
         End If
     Next i
 End Function
-
-Sub DownloadServersFile(myURL As String)
-'**********************************************************
-'Downloads the sinfo.dat file from a given url
-'Last change: 01/11/2018
-'Implemented by Cucsifae
-'Check content of strData to avoid clean the file sinfo.ini if there is no response from Github by Recox
-'**********************************************************
-On Error Resume Next
-    Dim strData As String
-    Dim f As Integer
-    
-    Set Inet = New clsInet
-    
-    strData = Inet.OpenRequest(myURL, "GET")
-    strData = Inet.Execute
-    strData = Inet.GetResponseAsString
-    
-    f = FreeFile
-    
-    If LenB(strData) <> 0 Then
-        Open Game.path(INIT) & "sinfo.dat" For Output As #f
-            Print #f, strData
-        Close #f
-    End If
-    
-    Exit Sub
-End Sub
 
 ' USO: If ArrayInitialized(Not ArrayName) Then ...
 Public Function ArrayInitialized(ByVal TheArray As Long) As Boolean
@@ -1625,3 +1530,39 @@ Public Sub LoadAOCustomControlsPictures(ByRef tForm As Form)
     Next
     
 End Sub
+
+Public Sub SetSpeedUsuario()
+    If UserEquitando Then
+        Call Engine_Set_BaseSpeed(0.024)
+    Else
+        Call Engine_Set_BaseSpeed(0.018)
+    End If
+End Sub
+
+Public Function CurServerIp() As String
+    CurServerIp = frmConnect.IPTxt
+End Function
+
+Public Function CurServerPort() As Integer
+    CurServerPort = Val(frmConnect.PortTxt)
+End Function
+
+Public Function CheckIfIpIsNumeric(CurrentIp As String) As String
+    If IsNumeric(mid$(CurrentIp, 1, 1)) Then
+        CheckIfIpIsNumeric = True
+    Else
+        CheckIfIpIsNumeric = False
+    End If
+End Function
+
+Public Function GetCountryCode(CurrentIp As String) As String
+    Dim CountryCode As String
+    CountryCode = GetCountryFromIp(CurrentIp)
+
+    If LenB(CountryCode) > 0 Then
+        GetCountryCode = CountryCode
+    Else
+        GetCountryCode = "??"
+    End If
+
+End Function

@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmConnect 
    BackColor       =   &H00E0E0E0&
    BorderStyle     =   0  'None
-   Caption         =   "Argentum Online"
+   Caption         =   "Argentum Online Libre"
    ClientHeight    =   9000
    ClientLeft      =   0
    ClientTop       =   0
@@ -25,6 +25,7 @@ Begin VB.Form frmConnect
    MaxButton       =   0   'False
    MinButton       =   0   'False
    PaletteMode     =   1  'UseZOrder
+   Picture         =   "frmConnect.frx":000C
    ScaleHeight     =   600
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   800
@@ -43,10 +44,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":000C
-      PICF            =   "frmConnect.frx":0A36
-      PICH            =   "frmConnect.frx":16F8
-      PICV            =   "frmConnect.frx":268A
+      PICE            =   "frmConnect.frx":1DC21
+      PICF            =   "frmConnect.frx":1E64B
+      PICH            =   "frmConnect.frx":1F30D
+      PICV            =   "frmConnect.frx":2029F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -70,10 +71,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":358C
-      PICF            =   "frmConnect.frx":3FB6
-      PICH            =   "frmConnect.frx":4C78
-      PICV            =   "frmConnect.frx":5C0A
+      PICE            =   "frmConnect.frx":211A1
+      PICF            =   "frmConnect.frx":21BCB
+      PICH            =   "frmConnect.frx":2288D
+      PICV            =   "frmConnect.frx":2381F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -84,7 +85,7 @@ Begin VB.Form frmConnect
          Strikethrough   =   0   'False
       EndProperty
    End
-   Begin AOLibre.uAOButton btnCodigoFuente 
+   Begin AOLibre.uAOButton btnCreditos 
       Height          =   375
       Left            =   6840
       TabIndex        =   12
@@ -97,10 +98,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":6B0C
-      PICF            =   "frmConnect.frx":7536
-      PICH            =   "frmConnect.frx":81F8
-      PICV            =   "frmConnect.frx":918A
+      PICE            =   "frmConnect.frx":24721
+      PICF            =   "frmConnect.frx":2514B
+      PICH            =   "frmConnect.frx":25E0D
+      PICV            =   "frmConnect.frx":26D9F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -124,10 +125,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":A08C
-      PICF            =   "frmConnect.frx":AAB6
-      PICH            =   "frmConnect.frx":B778
-      PICV            =   "frmConnect.frx":C70A
+      PICE            =   "frmConnect.frx":27CA1
+      PICF            =   "frmConnect.frx":286CB
+      PICH            =   "frmConnect.frx":2938D
+      PICV            =   "frmConnect.frx":2A31F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -151,10 +152,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":D60C
-      PICF            =   "frmConnect.frx":E036
-      PICH            =   "frmConnect.frx":ECF8
-      PICV            =   "frmConnect.frx":FC8A
+      PICE            =   "frmConnect.frx":2B221
+      PICF            =   "frmConnect.frx":2BC4B
+      PICH            =   "frmConnect.frx":2C90D
+      PICV            =   "frmConnect.frx":2D89F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -178,10 +179,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":10B8C
-      PICF            =   "frmConnect.frx":115B6
-      PICH            =   "frmConnect.frx":12278
-      PICV            =   "frmConnect.frx":1320A
+      PICE            =   "frmConnect.frx":2E7A1
+      PICF            =   "frmConnect.frx":2F1CB
+      PICH            =   "frmConnect.frx":2FE8D
+      PICV            =   "frmConnect.frx":30E1F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -205,10 +206,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":1410C
-      PICF            =   "frmConnect.frx":14B36
-      PICH            =   "frmConnect.frx":157F8
-      PICV            =   "frmConnect.frx":1678A
+      PICE            =   "frmConnect.frx":31D21
+      PICF            =   "frmConnect.frx":3274B
+      PICH            =   "frmConnect.frx":3340D
+      PICV            =   "frmConnect.frx":3439F
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   9.75
@@ -230,16 +231,16 @@ Begin VB.Form frmConnect
          Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H0000FF00&
       Height          =   4905
-      ItemData        =   "frmConnect.frx":1768C
+      ItemData        =   "frmConnect.frx":352A1
       Left            =   8685
-      List            =   "frmConnect.frx":1768E
+      List            =   "frmConnect.frx":352A3
       TabIndex        =   3
       Top             =   1680
       Width           =   2775
@@ -257,10 +258,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":17690
-      PICF            =   "frmConnect.frx":180BA
-      PICH            =   "frmConnect.frx":18D7C
-      PICV            =   "frmConnect.frx":19D0E
+      PICE            =   "frmConnect.frx":352A5
+      PICF            =   "frmConnect.frx":35CCF
+      PICH            =   "frmConnect.frx":36991
+      PICV            =   "frmConnect.frx":37923
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   12
@@ -284,10 +285,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":1AC10
-      PICF            =   "frmConnect.frx":1B63A
-      PICH            =   "frmConnect.frx":1C2FC
-      PICV            =   "frmConnect.frx":1D28E
+      PICE            =   "frmConnect.frx":38825
+      PICF            =   "frmConnect.frx":3924F
+      PICH            =   "frmConnect.frx":39F11
+      PICV            =   "frmConnect.frx":3AEA3
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -311,10 +312,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":1E190
-      PICF            =   "frmConnect.frx":1EBBA
-      PICH            =   "frmConnect.frx":1F87C
-      PICV            =   "frmConnect.frx":2080E
+      PICE            =   "frmConnect.frx":3BDA5
+      PICF            =   "frmConnect.frx":3C7CF
+      PICH            =   "frmConnect.frx":3D491
+      PICV            =   "frmConnect.frx":3E423
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   8.25
@@ -336,7 +337,7 @@ Begin VB.Form frmConnect
       _ExtentY        =   609
       CHCK            =   0   'False
       ENAB            =   -1  'True
-      PICC            =   "frmConnect.frx":21710
+      PICC            =   "frmConnect.frx":3F325
    End
    Begin VB.TextBox txtPasswd 
       BackColor       =   &H00000000&
@@ -435,10 +436,10 @@ Begin VB.Form frmConnect
       ENAB            =   -1  'True
       FCOL            =   7314354
       OCOL            =   16777215
-      PICE            =   "frmConnect.frx":227F6
-      PICF            =   "frmConnect.frx":23220
-      PICH            =   "frmConnect.frx":23EE2
-      PICV            =   "frmConnect.frx":24E74
+      PICE            =   "frmConnect.frx":4040B
+      PICF            =   "frmConnect.frx":40E35
+      PICH            =   "frmConnect.frx":41AF7
+      PICV            =   "frmConnect.frx":42A89
       BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Calibri"
          Size            =   15.75
@@ -467,6 +468,26 @@ Begin VB.Form frmConnect
       TabIndex        =   2
       Top             =   1680
       Width           =   2775
+   End
+   Begin VB.Label lblDescripcionServidor 
+      BackColor       =   &H80000013&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Descripcion Server ......."
+      BeginProperty Font 
+         Name            =   "Calibri"
+         Size            =   11.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H000080FF&
+      Height          =   1860
+      Left            =   3720
+      TabIndex        =   20
+      Top             =   5520
+      Width           =   4500
    End
    Begin VB.Image imgServArgentina 
       Height          =   795
@@ -597,19 +618,8 @@ Private Sub btnActualizarLista_Click()
     MsgBox "Se actualizo con exito la lista de servers"
 End Sub
 
-Private Sub btnCodigoFuente_Click()
-'***********************************
-'IMPORTANTE!
-'
-'No debe eliminarse la posibilidad de bajar el codigo de sus servidor de esta forma.
-'Caso contrario estarian violando la licencia Affero GPL y con ella derechos de autor,
-'incurriendo de esta forma en un delito punible por ley.
-'
-'Argentum Online es libre, es de todos. Mantengamoslo asi. Si tanto te gusta el juego y queres los
-'cambios que hacemos nosotros, comparti los tuyos. Es un cambio justo. Si no estas de acuerdo,
-'no uses nuestro codigo, pues nadie te obliga o bien utiliza una version anterior a la 0.12.0.
-'***********************************
-    Call ShellExecute(0, "Open", "https://github.com/ao-libre", "", App.path, SW_SHOWNORMAL)
+Private Sub btnCreditos_Click()
+    frmCreditos.Show vbModal
 End Sub
 
 Private Sub btnConectarse_Click()
@@ -621,11 +631,11 @@ Private Sub btnConectarse_Click()
     frmMain.hlst.Clear
 
     If Me.chkRecordar.Checked = False Then
-        Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Remember", False)
+        Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Remember", "False")
         Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "UserName", vbNullString)
         Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Password", vbNullString)
     Else
-        Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Remember", True)
+        Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Remember", "True")
         Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "UserName", AccountName)
         Call WriteVar(Game.path(INIT) & "Config.ini", "Login", "Password", Cripto.AesEncryptString(AccountPassword, AES_PASSWD))
     End If
@@ -679,15 +689,15 @@ Private Sub Form_Activate()
     If Me.lstRedditPosts.ListCount = 0 Then
         Call GetPostsFromReddit
     End If
-    
-    Set Lector = New clsIniManager
-    Lector.Initialize (Game.path(INIT) & "Config.ini")
-    
-    If CBool(Lector.GetValue("LOGIN", "Remember")) = True Then
-        Me.txtNombre = Lector.GetValue("LOGIN", "UserName")
-        Me.txtPasswd = Cripto.AesDecryptString(Lector.GetValue("LOGIN", "Password"), AES_PASSWD)
+
+    If CBool(GetVar(Game.path(INIT) & "Config.ini", "LOGIN", "Remember")) = True Then
+        Me.txtNombre = GetVar(Game.path(INIT) & "Config.ini", "LOGIN", "UserName")
+        Me.txtPasswd = Cripto.AesDecryptString(GetVar(Game.path(INIT) & "Config.ini", "LOGIN", "Password"), AES_PASSWD)
         Me.chkRecordar.Checked = True
     End If
+
+    'Hacemos click en el primer server para poder obtener su info y setear mundoseleccionado
+    Call lstServers_Click
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -719,7 +729,7 @@ Private Sub Form_Load()
     
     Call LoadTextsForm
     Call LoadButtonsAnimations
-        '    Call LoadAOCustomControlsPictures(Me) 
+        '    Call LoadAOCustomControlsPictures(Me)
     'Todo: Poner la carga de botones como en el frmCambiaMotd.frm para mantener coherencia con el resto de la aplicacion
     'y poder borrar los frx de este archivo
 
@@ -727,7 +737,7 @@ End Sub
 
 Private Sub LoadTextsForm()
     btnActualizarLista.Caption = JsonLanguage.item("BTN_ACTUALIZAR_LISTA").item("TEXTO")
-    btnCodigoFuente.Caption = JsonLanguage.item("BTN_CODIGO_FUENTE").item("TEXTO")
+    btnCreditos.Caption = JsonLanguage.item("BTN_CREDITOS").item("TEXTO")
     btnConectarse.Caption = JsonLanguage.item("BTN_CONECTARSE").item("TEXTO")
     btnCrearCuenta.Caption = JsonLanguage.item("BTN_CREAR_CUENTA").item("TEXTO")
     btnCrearServer.Caption = JsonLanguage.item("BTN_CREAR_SERVER").item("TEXTO")
@@ -736,7 +746,7 @@ Private Sub LoadTextsForm()
     btnReglamento.Caption = JsonLanguage.item("BTN_REGLAMENTO").item("TEXTO")
     lblRecordarme.Caption = JsonLanguage.item("LBL_RECORDARME").item("TEXTO")
     btnVerForo.Caption = JsonLanguage.item("LBL_FORO").item("TEXTO")
-    btnSalir.Caption = JsonLanguage.item("LBL_SALIR").item("TEXTO")
+    btnSalir.Caption = JsonLanguage.item("BTN_SALIR").item("TEXTO")
     btnTeclas.Caption = JsonLanguage.item("LBL_TECLAS").item("TEXTO")
 End Sub
 
@@ -754,7 +764,7 @@ Private Sub LoadButtonsAnimations()
     'AnimControl(2).Velocidad = 0
     'AnimControl(2).Top = 350
     
-    btnCodigoFuente.Top = 10
+    btnCreditos.Top = 10
     AnimControl(3).Activo = True
     AnimControl(3).Velocidad = 0
     AnimControl(3).Top = 560
@@ -813,7 +823,7 @@ Private Sub tEfectos_Timer()
 
                 Case 2: oTop = btnActualizarLista.Top
 
-                Case 3: oTop = btnCodigoFuente.Top
+                Case 3: oTop = btnCreditos.Top
 
                 Case 4: oTop = btnCrearCuenta.Top
 
@@ -850,7 +860,7 @@ Private Sub tEfectos_Timer()
 
                 Case 2: btnConectarse.Top = oTop
 
-                Case 3: btnCodigoFuente.Top = oTop
+                Case 3: btnCreditos.Top = oTop
 
                 Case 4: btnCrearCuenta.Top = oTop
 
@@ -877,7 +887,7 @@ Private Sub tEfectos_Timer()
         ' GSZAO - Animacion...
         btnConectarse.Top = AnimControl(1).Top
         btnActualizarLista.Top = AnimControl(2).Top
-        btnCodigoFuente.Top = AnimControl(3).Top
+        btnCreditos.Top = AnimControl(3).Top
         btnCrearCuenta.Top = AnimControl(4).Top
         btnCrearServer.Top = AnimControl(5).Top
         btnManual.Top = AnimControl(6).Top
@@ -895,19 +905,25 @@ Private Sub lstRedditPosts_Click()
 End Sub
 
 Private Sub lstServers_Click()
-    IPTxt.Text = ServersLst(lstServers.ListIndex + 1).Ip
-    PortTxt.Text = ServersLst(lstServers.ListIndex + 1).Puerto
+   'Parchesin para poder clickear el primer server apenas entro al juego automaticamente, sino hago esto el ListIndex es -1
+    If lstServers.ListIndex < 0 Then lstServers.ListIndex = 0
+
+    frmConnect.lblDescripcionServidor = JsonLanguage.item("FRMCONNECT_LBL_DESCRIPCION_SERVER").item("TEXTO")
+
+    Dim ServerIndexInLstServer As Integer
+    ServerIndexInLstServer = lstServers.ListIndex + 1
+
+    IPTxt.Text = ServersLst(ServerIndexInLstServer).Ip
+    PortTxt.Text = ServersLst(ServerIndexInLstServer).Puerto
     
     'Variable Global declarada en Declares.bas
-    MundoSeleccionado = ServersLst(lstServers.ListIndex + 1).Mundo
+    MundoSeleccionado = ServersLst(ServerIndexInLstServer).Mundo
     
-    'En caso que no haya un mundo seleccionado en la propiedad Mundo
-    'Seleccionamos Alkon como mundo default
-    If LenB(MundoSeleccionado) = 0 Then
-        MundoSeleccionado = "Alkon"
-    End If
+    Call Protocol.Connect(E_MODO.ObtenerDatosServer)
 
-    CurServer = lstServers.ListIndex + 1
+    pingTime = GetTickCount
+
+    CurServer = ServerIndexInLstServer
 End Sub
 
 Private Sub txtPasswd_KeyPress(KeyAscii As Integer)
@@ -916,4 +932,74 @@ End Sub
 
 Private Sub btnCrearCuenta_Click()
     Call Protocol.Connect(E_MODO.CrearCuenta)
+End Sub
+
+Public Sub CargarServidores()
+'********************************
+'Author: Unknown
+'Last Modification: 21/12/2019
+'Last Modified by: Recox
+'Added Instruction "CloseClient" before End so the mutex is cleared (Rapsodius)
+'Added IP Api to get the country of the IP. (Recox)
+'Get ping from server (Recox)
+'********************************
+On Error GoTo errorH
+    Dim File As String
+
+    File = Game.path(INIT) & "sinfo.dat"
+    QuantityServers = Val(GetVar(File, "INIT", "Cant"))
+    IpApiEnabled = GetVar(Game.path(INIT) & "Config.ini", "Parameters", "IpApiEnabled")
+
+    frmConnect.lstServers.Clear
+
+    ReDim ServersLst(1 To QuantityServers) As tServerInfo
+
+    Dim i As Long
+    For i = 1 To QuantityServers
+        Dim CurrentIp As String
+        CurrentIp = Trim$(GetVar(File, "S" & i, "Ip"))
+
+        ServersLst(i).Ip = CurrentIp
+        ServersLst(i).Puerto = CInt(GetVar(File, "S" & i, "PJ"))
+        ServersLst(i).Mundo = GetVar(File, "S" & i, "MUNDO")
+        ServersLst(i).Desc = GetVar(File, "S" & i, "Desc")
+
+        ' Call PingServer(ServersLst(i).Ip, ServersLst(i).Puerto)
+        frmConnect.lstServers.AddItem (ServersLst(i).Desc)
+    Next i
+
+    If CurServer = 0 Then CurServer = 1
+
+Exit Sub
+
+errorH:
+    Call MsgBox("Error cargando los servidores, actualicelos de la web. http://www.ArgentumOnline.org", vbCritical + vbOKOnly, "Argentum Online Libre")
+End Sub
+
+Private Sub DownloadServersFile(myURL As String)
+'**********************************************************
+'Downloads the sinfo.dat file from a given url
+'Last change: 01/11/2018
+'Implemented by Cucsifae
+'Check content of strData to avoid clean the file sinfo.ini if there is no response from Github by Recox
+'**********************************************************
+On Error Resume Next
+    Dim strData As String
+    Dim f As Integer
+
+    Set Inet = New clsInet
+
+    strData = Inet.OpenRequest(myURL, "GET")
+    strData = Inet.Execute
+    strData = Inet.GetResponseAsString
+
+    f = FreeFile
+
+    If LenB(strData) <> 0 Then
+        Open Game.path(INIT) & "sinfo.dat" For Output As #f
+            Print #f, strData
+        Close #f
+    End If
+
+    Exit Sub
 End Sub

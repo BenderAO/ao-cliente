@@ -1147,7 +1147,7 @@
     },
     "CERRAR": {
         "TEXTOS": [
-            "Return to the home screen",
+            "Change player",
             "Exit the Game",
             "Exit [ESC]"
         ]
@@ -1178,6 +1178,9 @@
     "BTN_CODIGO_FUENTE": {
         "TEXTO": "Source Code"
     },
+    "BTN_CREDITOS": {
+        "TEXTO": "Credits"
+    },
     "BTN_CONECTARSE": {
         "TEXTO": "Connect"
     },
@@ -1202,7 +1205,7 @@
     "LBL_FORO": {
         "TEXTO": "See Forum"
     },
-    "LBL_SALIR": {
+    "BTN_SALIR": {
         "TEXTO": "Exit"
     },
     "LBL_TECLAS": {
@@ -1256,32 +1259,32 @@
     "FRMBUSCAR_TITLE": {
         "TEXTO": "Searcher"
     },
-    "FRMBUSCAR_CREAR": {
-        "TEXTO": "Create"
-    },
-    "FRMBUSCAR_CREARNPCS": {
-        "TEXTO": "Npcs"
-    },
-    "FRMBUSCAR_CREAROBJETOS": {
-        "TEXTO": "Objects"
-    },
     "FRMBUSCAR_CANTIDAD": {
         "TEXTO": "Quantity"
     },
-    "FRMBUSCAR_RESPAWN": {
-        "TEXTO": "Respawn"
+    "FRMBUSCAR_INGRESE_CANTIDAD": {
+        "TEXTO": "Enter the number of objects"
     },
     "FRMBUSCAR_BUSCAROBJETO": {
-        "TEXTO": "Search Object"
+        "TEXTO": "Search Objects"
     },
     "FRMBUSCAR_BUSCARNPCS": {
-        "TEXTO": "Search Npcs"
+        "TEXTO": "Search NPCs"
+    },
+    "FRMBUSCAR_INFO_OBJ": {
+        "TEXTO": "<Right click on an object to create it>"
+    },
+    "FRMBUSCAR_INFO_NPC": {
+        "TEXTO": "<Right click on an NPC to spawn it>"
     },
     "FRMBUSCAR_LIMPIARLISTAS": {
-        "TEXTO": "Clean list"
+        "TEXTO": "Clear list"
     },
     "FRMBUSCAR_SELECCIONE_ITEM": {
-        "TEXTO": "Select one item from the list before click on the create button"
+        "TEXTO": "First select an element of the list."
+    },
+    "FRMBUSCAR_BUSQUEDA_TOOLTIP": {
+        "TEXTO": "Enter part of the name of the object or NPC you're looking for"
     },
     "FRM_CANTIDAD_TIRAR": {
         "TEXTO": "Throw"
@@ -1738,5 +1741,29 @@
             178,
             237
         ]
+    },
+    "MENSAJE_MONTURA_SALIR" : {
+        "TEXTO": "You cannot walk here with your mount, get off to enter a place with a roof."
+    },
+    "FRMCONNECT_LBL_DESCRIPCION_SERVER" : {
+        "TEXTO": "Obtaining data from the server please wait ... if I do not get it in a few seconds and throw error means that the server is offline ..."
+    },
+    "FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ": {
+        "TEXTO": "Are you sure you want to delete the character from your account? This action cannot be reversed"
+    },
+    "FRMPANELACCOUNT_CONFIRMAR_BORRAR_PJ_TITULO": {
+        "TEXTO": "ALERT - DELETE CHARACTER"
+    },
+    "FRMPANELACCOUNT_BTN_BORRAR_PERSONAJE": {
+        "TEXTO": "Delete Character"
+    },
+    "FRMPANELACCOUNT_BTN_SALIR": {
+        "TEXTO": "Exit"
+    },
+    "FRMPANELACCOUNT_BTN_CREAR_PERSONAJE": {
+        "TEXTO": "Create Character"
+    },
+    "FRMPANELACCOUNT_BTN_CONECTAR" : {
+        "TEXTO": "Enter"
     }
 }
